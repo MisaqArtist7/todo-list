@@ -3,7 +3,7 @@
 A clean, no-frills app for keeping track of daily tasks.  
 Full CRUD plus a “done / not-yet” toggle.
 
-## ⚡ Quick Start
+## 🚀 Quick Start / How It Works
 
 - git clone https://github.com/MisaqArtist7/todo-list.git
 - cd todo-list
