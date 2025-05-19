@@ -24,6 +24,6 @@ Full CRUD plus a “done / not-yet” toggle.
 - TypeScript
 - Tailwind CSS v4
 
-- Enjoy it! 🧑‍💻
+## 🧑‍💻 Enjoy it! 
 
 
