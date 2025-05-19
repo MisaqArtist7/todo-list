@@ -13,34 +13,42 @@ const App: React.FC = () => {
     };
   }, []);
   
-  const [inputValue, setInputValue] = useState('')
-  const inputHandler = (e: { target: { value: string; }; })=> {
-    setInputValue(e.target.value)
+  interface Todo {
+    id: number;
+    title: string;
+    isComplete: boolean;
   }
 
-  const [todos, setTodos] = useState([
-    {
-      id: Date.now(),
-      title:'misaq',
-      isCompelete: false,
-    }
-  ])
+  const [inputValue, setInputValue] = useState<string>("");   
+  const [todos, setTodos] = useState<Todo[]>([]);            
 
-  const submitHandler = (e) => {
-    e.preventDefault()
-    const newArray = {
+  // 3) هندلرِ تغییرِ input
+  const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  // 4) هندلرِ ارسال فرم
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const trimmed = inputValue.trim();
+    if (trimmed === "") return;
+
+    const newTodo: Todo = {
       id: Date.now(),
-      title: inputValue,
-      isCompelete:false
-    }
-    setInputValue('')
-    setTodos((prevState) => [...prevState, newArray])
-  }
-  
+      title: trimmed,
+      isComplete: false, 
+    };
+
+    setTodos((prev) => [...prev, newTodo]);
+    setInputValue("");
+  };
+
   const removeItem = (id: number) => {
-    const deleteTodo = todos.filter((todo) => todo.id !== id)
-    setTodos(deleteTodo)
-  }
+    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+  };
+
+   
   return (
     <>
       <header className="flex-row-center bg-sky-600 h-20 text-white">
@@ -61,7 +69,7 @@ const App: React.FC = () => {
       </div>
 
       <div className='flex-row-center'>
-        <div className='w-[44%] bg-white flex-col-center p-5 rounded shadow gap-3'>
+        <div className={`w-[44%] flex-col-center p-5 rounded ${todos.length > 0 ? 'bg-white shadow' : ''} gap-3`}>
           {/* todo list */}
           {todos.map((todo) => (
           <div className='flex items-center justify-between border-b border-b-gray-300 w-full p-1 rounded-xs'>
