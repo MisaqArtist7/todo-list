@@ -5,7 +5,6 @@ Full CRUD plus a “done / not-yet” toggle.
 
 ## ⚡ Quick Start
 
-```bash
 git clone https://github.com/MisaqArtist7/todo-list.git
 cd todo-list
 npm install
