@@ -1,9 +1,12 @@
-# React + TypeScript + Vite
-- git clone https://github.com/MisaqArtist7/todo-list.git
-- cd todo-list
-- npm install
-- npm run dev
+# 📝 Todo List — React + TypeScript + Vite
 
-# Enjoy it
+A clean, no-frills app for keeping track of daily tasks.  
+Full CRUD plus a “done / not-yet” toggle.
 
+## ⚡ Quick Start
 
+```bash
+git clone https://github.com/MisaqArtist7/todo-list.git
+cd todo-list
+npm install
+npm run dev
