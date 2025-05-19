@@ -20,14 +20,24 @@ const App: React.FC = () => {
   }
 
   const [inputValue, setInputValue] = useState<string>("");   
-  const [todos, setTodos] = useState<Todo[]>([
-    {
-      id: Date.now(),
-      title: 'misaq',
-      isComplete: false, 
-    }
-  ]); 
-             
+  const [todos, setTodos] = useState<Todo[]>([]); 
+
+  const [isLoaded, setIsLoaded] = useState(false); 
+  const STORAGE_KEY = "my-todos";
+  // load
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) setTodos(JSON.parse(stored));
+    setIsLoaded(true);          
+  }, []);
+  
+  // save
+  useEffect(() => {
+    if (!isLoaded) return;   
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+  }, [todos, isLoaded]);
+  
+
   const completeHandler = (id: number) => {
     setTodos(prev =>
       prev.map(todo =>
@@ -59,8 +69,34 @@ const App: React.FC = () => {
   const removeItem = (id: number) => {
     setTodos((prev) => prev.filter((todo) => todo.id !== id));
   };
+const [showEditForm, setShowEditForm] = useState(false);
+const [newValue, setNewValue] = useState<string>('')
+const [editingId, setEditingId] = useState<number | null>(null);
 
-   
+  const startEdit = (id: number) => {
+    setShowEditForm(prev => !prev)
+    setEditingId(id)
+  }
+  
+  const editHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const trimmed = newValue.trim();
+
+    if (trimmed !== "") {
+      setTodos(prev =>
+        prev.map(todo =>
+          todo.id === editingId ? { ...todo, title: trimmed } : todo
+        )
+      );
+    }
+
+    setShowEditForm(false);
+    setEditingId(null);
+    setNewValue("");
+  };
+  
+
+  
   return (
     <>
       <header className="flex-row-center bg-sky-600 h-20 text-white">
@@ -84,13 +120,13 @@ const App: React.FC = () => {
         <div className={`w-[44%] flex-col-center p-5 rounded ${todos.length > 0 ? 'bg-white shadow' : ''} gap-3`}>
           {/* todo list */}
           {todos.map((todo) => (
-          <div className={`${todo.isComplete ? 'line-through text-gray-500 opacity-60 pointer-events-none' : ''} flex items-center justify-between border-b border-b-gray-300 w-full p-1 rounded-xs`}>
+          <div className={`${todo.isComplete ? 'line-through text-gray-500 opacity-60' : ''} flex items-center justify-between border-b border-b-gray-300 w-full p-1 rounded-xs`}>
             <h2 className='text-lg'>{todo.title}</h2>
             <div className='flex items-center gap-x-2 *:cursor-pointer'>
               <svg onClick={() => completeHandler(todo.id)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 hover:text-green-700">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
               </svg>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-sky-600">
+              <svg onClick={() => startEdit(todo.id)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-sky-600">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
               </svg>
               <svg onClick={() => removeItem(todo.id)}
@@ -102,6 +138,19 @@ const App: React.FC = () => {
           ))}
         </div>
       </div>
+      {showEditForm && (
+        <form onSubmit={(e) => editHandler(e)} className={`z-50 bg-white shadow w-[300px] h-[144px] flex-row-center fixed inset-0 m-auto rounded-xs flex-col gap-3`}>
+          <input onChange={(e) => setNewValue(e.target.value)} value={newValue}
+          type="text" placeholder='Enter title' className='outline-none border border-gray-300 py-1 px-2 rounded-xs'/>
+          <button className='flex items-center gap-x-1 bg-sky-600 px-5 text-lg rounded-xs hover:bg-sky-500 text-white cursor-pointer'>
+            Change title
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+            </svg>
+          </button>
+        </form>
+      )}
+      <div className={`${showEditForm ? 'flex' : 'hidden'} overlay bg-black/60 fixed top-0 bottom-0 right-0 left-0`}></div>
     </>
   );
 };
