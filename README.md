@@ -18,3 +18,12 @@ Full CRUD plus a “done / not-yet” toggle.
 - Mark as done / undo in one click
 - Minimal, responsive UI (Tailwind CSS)
 - Tasks persist in Local Storage — your list is still there next time
+
+## 🛠 Tech Stack
+- React 19 (Tailwind CSS with Vite)
+- TypeScript
+- Tailwind CSS v4
+
+- Enjoy it! 🧑‍💻
+
+
