@@ -10,4 +10,6 @@ git clone https://github.com/MisaqArtist7/todo-list.git
 cd todo-list
 npm install
 npm run dev
+Visit http://localhost:5173 in your browser.
 
+## ✨ Features
